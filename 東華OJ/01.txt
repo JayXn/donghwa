@@ -1,0 +1,28 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+ 
+class Point{
+public:
+  float x;
+  float y;
+
+  Point(float x , float y){
+    cout << "(" << x << ", " << y << ")" << endl;
+  }
+  
+};
+
+
+int main(){
+  int N;
+  cin>>N;
+
+  while(N > 0){
+    float a , b;
+    cin >> a >> b;
+    Point(a,b);
+    N--;
+  }
+}

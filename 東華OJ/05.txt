@@ -1,0 +1,51 @@
+#include <iostream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+ 
+class Check{
+public:
+  Check(){
+  }
+
+  Check (int a , int b , int c , int d){
+    l1 = a;
+    r1 = b;
+    l2 = c;
+    r2 = d;
+  }
+
+  void Judge_Print(){
+    if (r1 <= l2 || l1 >= r2){
+      cout << "no overlay"<<endl;
+    } 
+    else{
+      cout << "overlay"<<endl;
+    }
+  }
+
+  ~Check(){
+  }
+
+  int l1 , r1 , l2 , r2;
+};
+
+
+void swap(int &a , int &b){
+  int t = a;
+  a = b;
+  b = t;
+}
+
+int main(){
+  int a , b , c , d;
+  cin >> a >> b >> c >> d;
+  if(a > b) swap(a ,b);
+  if(c > d) swap(c ,d);
+
+  Check line (a,b,c,d);
+
+  line.Judge_Print();
+
+}

@@ -1,0 +1,56 @@
+class Path{
+public:
+
+  Path(Segment * array , int number){
+    Number = number;      //有幾段
+    seg_Array = array;    //放著segment的陣列
+
+    //檢查頭尾
+    if(che_Connect() == 0){
+      display();              //顯示總長
+    }       
+    else{
+      cout << "-1" << endl;
+    }
+  }
+
+
+  int che_Connect(){
+    
+    for(int i = 0 ; i < Number - 1 ; i++){
+      if(seg_Array[i].getEnd(1).getX() != seg_Array[i + 1].getEnd(0).getX()  ||
+         seg_Array[i].getEnd(1).getY() != seg_Array[i + 1].getEnd(0).getX())
+         {
+          return -1;
+         }
+    }
+
+    if(seg_Array[0].getEnd(0).getX() == seg_Array[Number - 1].getEnd(1).getX() &&
+       seg_Array[0].getEnd(0).getY() == seg_Array[Number - 1].getEnd(1).getY())
+       {
+        return -1;
+       }
+
+    return 0;
+  }
+
+
+  void display(){
+    double all_Len = 0;
+    int originNumber = Number;
+    Segment * p = seg_Array;
+
+    while(Number > 0){
+      all_Len += p -> length();
+      p = p + 1;
+      --Number;
+    }
+
+    Number = originNumber;
+    cout << all_Len << endl;
+  }
+
+  int Number;
+  Segment * seg_Array;
+
+};

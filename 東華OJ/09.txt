@@ -1,0 +1,37 @@
+#include <iostream>
+#include <string>
+#include <math.h>
+
+using namespace std;
+
+class Calculator{
+public:
+  Calculator(){};
+
+  Calculator(double km){
+    distance = km;
+    fee();
+  }
+
+  void fee(){
+    if(distance <= 200) {
+      cout << round(distance * 1.2) << endl;
+      return;
+    }
+    cout << round(240 + (distance-200) * 0.9)  << endl;
+  }
+
+  double distance;
+
+};
+
+
+
+
+
+int main(){
+  double k;
+  cin >> k;
+
+  Calculator c(k);
+}

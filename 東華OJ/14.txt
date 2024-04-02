@@ -1,0 +1,76 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+class InitialReverse{
+public:
+  InitialReverse(){};
+
+  InitialReverse(string initial) : m_initial(initial) , m_Reverse(initial) ,time(0){
+    while(1){
+      ReverseAndAdd();
+      time += 1;
+      if(Equal()){
+        cout << time << " ";
+        cout << m_initial << endl;
+        break;
+      }
+    }
+  }
+
+
+public:
+  void ReverseAndAdd();
+
+  bool Equal();
+
+private:
+  string m_initial;
+  string m_Reverse;
+  string Add; //相加結果
+  int time;   //紀錄跑幾次
+};
+
+void InitialReverse::ReverseAndAdd(){
+  int len = m_initial.size();
+  int in = 0;
+  int re = 0;
+
+  for(int i = 0 ; m_initial[i] != '\0' ; i++){
+    m_Reverse[i] = m_initial[len - 1 - i];
+  }
+
+  for(int j = 0 ; j < len ; j++){   
+    in = in * 10 + m_initial[j] - '0';
+  }
+  for(int j = 0 ; j < len ; j++){   
+    re = re * 10 + m_Reverse[j] - '0';
+  }
+  //算出相加的數值轉字串
+  Add = to_string(in + re);
+  m_initial = Add;
+}
+
+bool InitialReverse::Equal(){
+  string reversed = m_initial;
+  reverse(reversed.begin(), reversed.end());
+
+  return m_initial == reversed;
+}
+
+
+
+
+
+int main(){
+  int times;
+  cin >> times;
+
+  string initial;
+  for(int i = 0 ; i < times ; i++){
+    cin >> initial;
+    InitialReverse in(initial);
+  }
+}

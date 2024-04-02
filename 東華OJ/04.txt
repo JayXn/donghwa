@@ -1,0 +1,31 @@
+#include <iostream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+ 
+class vel{
+public:
+  void setKH(float a , float b){
+    km = a;
+    hr = b;
+  }
+
+  void Print(){
+    cout << km/hr << endl;
+  }
+
+  float km , hr;
+};
+
+
+int main(){
+  float x , y;
+
+  cin >> x >> y;
+
+  vel velocity;
+
+  velocity.setKH(x , y);
+  velocity.Print();
+}

@@ -1,0 +1,43 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Person{
+public:
+  float getX(){
+    return axe_X;
+  }
+
+  float getY(){
+    return axe_Y;
+  }
+
+  Person(float x , float y){
+    axe_X = x;
+    axe_Y = y;       
+  }
+
+private:
+  float axe_X;
+  float axe_Y;
+};
+
+
+
+
+int main(){
+  int times;
+  cin >> times;
+
+  float  x , y;
+  while(times > 0){
+    cin >> x >> y;
+
+    Person p(x , y);
+
+    cout << "(" << p.getX() << ", " << p.getY() << ")" << endl;
+
+    times--;
+  }
+}

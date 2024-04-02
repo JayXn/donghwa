@@ -1,0 +1,86 @@
+#include <iostream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+class Digit { 
+  int digit;
+public:
+  Digit(int d = 0) : digit(d % 10) {}
+  void setDigit(int d) { digit = d % 10; }
+  int getDigit() const {return digit;}
+};
+
+class Integer { 
+  Digit value[1000];
+  string Digits;
+
+public:
+  Integer(){} 
+  
+  Integer(string n){
+    int length = n.size();
+    for(int i = 0; i < length; i++) {
+      if(isdigit(n[i])) {
+        value[i].setDigit(n[i] - '0');
+        Digits.push_back(value[i].getDigit() + '0');
+      } 
+      else {
+        break;
+      }
+    }
+  }
+  
+  string getWord(string & result , int q) const {
+    string symbols = "0123456789ABCDEF";
+    result = symbols[q] + result;
+    return result;
+  }
+
+
+  // 進行除法運算，回傳餘數
+  int LongDivide_Input(int divisor , string & dividend) const {    
+    string quotient = "";         //商
+    int length = dividend.size(); 
+    int remainder = 0;            
+    int i = 0;
+    while(i < length) {
+        remainder = remainder * 10 + dividend[i] - '0';     
+        quotient = quotient + to_string(remainder / divisor);     
+        remainder = remainder % divisor;                    
+        i++;      
+    }
+
+    while(quotient.size() > 1 && quotient[0] == '0') {  // 去掉前面的0
+      quotient.erase(0, 1);
+    }
+    dividend = quotient;
+    return remainder;
+  }
+
+
+  void displayInBase(int base) const {
+    string result = "";
+    string dividend = Digits;
+    
+    while(dividend != "0") {
+      int remainder = LongDivide_Input(base , dividend);
+      getWord(result , remainder);
+    }
+    cout << result;
+  }
+};
+
+
+int main()
+{
+  string in;
+  int j;
+  cin >> in;
+  Integer i(in);
+  for(j = 2;j <= 16;j ++) {
+    i.displayInBase(j);
+    cout << endl;
+  }
+}

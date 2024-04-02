@@ -1,0 +1,41 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class CheckCar{
+public:
+  CheckCar(int a){
+    car = a;
+  }
+
+  void Calculate(){
+    int remain = 0;
+    for(int i = 0 ; i < 4 ; i++){
+      remain = car % 10;
+
+      if(remain == 4){
+        cout << "Yes" << endl;
+        return;
+      }
+
+      car = car / 10;
+    }
+
+    cout << "No" << endl;
+    return;
+  }
+
+  int car;
+};
+
+
+
+
+int main(){
+  int a;
+  cin >> a;
+
+  CheckCar c(a);
+  c.Calculate();
+}

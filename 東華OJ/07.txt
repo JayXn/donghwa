@@ -1,0 +1,20 @@
+
+class Segment{
+public:
+  Segment (Point p1 , Point p2){
+    head = &p1;
+    end = &p2;
+  }
+
+  Point getEnd(int n){
+    if(n == 0) return *head;
+    return *end;
+  }
+
+  double length(){
+    return sqrt(pow(((*end).getX() - (*head).getX()) , 2) + pow(((*end).getY() - (*head).getY()) , 2));
+  }
+
+  Point *head;
+  Point *end;
+};

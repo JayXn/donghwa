@@ -1,0 +1,129 @@
+#include <iostream>
+#include <string>
+#include <bitset>
+
+using namespace std;
+
+class Operations{
+public:
+  Operations(){
+    string initial = "0";
+  }
+
+public:
+  void Addi(string rd, string rs, int immediate) {
+    string machineCode = "001000";
+    machineCode += GetRegisterCode(rs);
+    machineCode += GetRegisterCode(rd);
+    machineCode += bitset<16>(immediate).to_string();
+    cout << machineCode << endl;
+  }
+  void Add(string rd, string rs, string rt) {
+    string machineCode = "000000";
+    machineCode += GetRegisterCode(rs);
+    machineCode += GetRegisterCode(rt);
+    machineCode += GetRegisterCode(rd);
+    machineCode += "00000";
+    machineCode += "100000";
+    cout << machineCode << endl;
+  }
+  void Sub(string rd, string rs, string rt) {
+    string machineCode = "000000";
+    machineCode += GetRegisterCode(rs);
+    machineCode += GetRegisterCode(rt);
+    machineCode += GetRegisterCode(rd);
+    machineCode += "00000";
+    machineCode += "100010";
+    cout << machineCode << endl;
+  }
+  void Or(string rd, string rs, string rt) {
+    string machineCode = "000000";
+    machineCode += GetRegisterCode(rs);
+    machineCode += GetRegisterCode(rt);
+    machineCode += GetRegisterCode(rd);
+    machineCode += "00000";
+    machineCode += "100101";
+    cout << machineCode << endl;
+  }
+  void And(string rd, string rs, string rt) {
+    string machineCode = "000000";
+    machineCode += GetRegisterCode(rs);
+    machineCode += GetRegisterCode(rt);
+    machineCode += GetRegisterCode(rd);
+    machineCode += "00000";
+    machineCode += "100100";
+    cout << machineCode << endl;
+  }
+
+private:
+  string GetRegisterCode(string regName) {
+        if (regName == "$t0") {
+          return "01000";
+        }
+        else if (regName == "$t1") {
+          return "01001"; 
+        }
+        else if (regName == "$t2") {
+          return "01010";
+        }
+        else if (regName == "$t3") {
+          return "01011";
+        }
+        else if (regName == "$t4") {
+          return "01100";
+        }
+        else if (regName == "$t5") {
+          return "01101";
+        }
+        else if (regName == "$t6") {
+          return "01110";
+        }
+        else if (regName == "$t7") {
+          return "01111";
+        }
+        return ""; 
+    }
+
+};
+
+
+
+
+int main(){
+  Operations op;
+  string ope, rd, rs, rt;
+  int immediate;
+
+  while(cin >> ope) {
+    if (ope == "addi") {
+      cin >> rd >> rs >> immediate;
+      rd = rd.substr(0, rd.size() - 1);
+      rs = rs.substr(0, rs.size() - 1);
+      op.Addi(rd, rs, immediate);
+    }
+    else if(ope == "add"){
+      cin >> rd >> rs >> rt;
+      rd = rd.substr(0, rd.size() - 1);
+      rs = rs.substr(0, rs.size() - 1);
+      op.Add(rd, rs, rt);
+    }
+    else if(ope == "sub"){
+      cin >> rd >> rs >> rt;
+      rd = rd.substr(0, rd.size() - 1);
+      rs = rs.substr(0, rs.size() - 1);
+      op.Sub(rd, rs, rt);
+    }
+    else if(ope == "or"){
+      cin >> rd >> rs >> rt;
+      rd = rd.substr(0, rd.size() - 1);
+      rs = rs.substr(0, rs.size() - 1);
+      op.Or(rd, rs, rt);
+    }
+    else if(ope == "and"){
+      cin >> rd >> rs >> rt;
+      rd = rd.substr(0, rd.size() - 1);
+      rs = rs.substr(0, rs.size() - 1);
+      op.And(rd, rs, rt);
+    }
+  }
+}

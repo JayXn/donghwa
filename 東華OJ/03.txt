@@ -1,0 +1,56 @@
+#include <iostream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+ 
+class Perimeter{
+public:
+  Perimeter(){
+  }
+
+  void round(){
+    cout << sqrt((a1 - b1)*(a1 - b1) + (a2 - b2)*(a2 - b2)) +
+            sqrt((a1 - c1)*(a1 - c1) + (a2 - c2)*(a2 - c2)) +
+            sqrt((c1 - b1)*(c1 - b1) + (c2 - b2)*(c2 - b2)) 
+         << endl;
+  }
+
+  Perimeter(double a , double b , double c , double d , double e , double f){
+    a1 = a;
+    a2 = b;
+    b1 = c;
+    b2 = d;
+    c1 = e;
+    c2 = f;
+  }
+
+  ~Perimeter(){
+  }
+
+  double a1 , a2;
+  double b1 , b2; 
+  double c1 , c2;
+};
+
+
+
+
+int main(){
+  int L;
+  cin >> L;
+
+  while(L > 0){
+    double a1 , a2 , c1;
+    double b1 , b2 , c2;
+    
+    cin >> a1 >> a2 >> b1 >> b2 >> c1 >> c2;  
+    
+
+    Perimeter Car (a1 , a2 ,  b1 , b2 , c1 , c2);
+
+    Car.round();
+
+    L--;
+  }
+}
