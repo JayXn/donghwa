@@ -21,7 +21,7 @@ class Time {
             totalSec = (stoi(partTimes[0]) * 3600) + (stoi(partTimes[1]) * 60) + stoi(partTimes[2]);
         }
         void split() {
-            while ((pos = time.find(":"))    != string::npos) {
+            while ((pos = time.find(":")) != string::npos) {
                 subtime = time.substr(0, pos);
                 partTimes.push_back(subtime);
                 time.erase(0, pos + 1);
