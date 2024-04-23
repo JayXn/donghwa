@@ -27,8 +27,8 @@ public:
             cin >> M >> N >> x >> y;
             createGrid(M, N);
 
-            int checkX = (M+1) - x, checkY = y;
-            int count = 2;
+            int checkX = (M+1) - x, checkY = y; // 將起始位置轉換成陣列中的座標
+            int count = 2; // 初始化為2，因為起始位置和終點位置都已經有了
             p.push({checkX, checkY});
             char cmd;
             while (cin >> cmd && count < M * N) { 
