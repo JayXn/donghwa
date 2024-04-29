@@ -1,0 +1,63 @@
+#include <iostream>
+#include <string>
+#include <cctype>
+
+using namespace std;
+
+class Anagram : public string {
+private:
+    string str;
+public:
+  Anagram(string s): str(s) {
+    removeNonAlpha();
+    changeCase();
+  }
+
+  void removeNonAlpha() { // 移除非字母字元
+    for (int i = 0; i < str.length(); ) {
+      if (!isalpha(str[i])) {
+        str.erase(i, 1);
+      } 
+      else{
+        i++;
+      }
+    }
+  }
+  void changeCase() { // 轉小寫字母
+    for (int i = 0; i < str.length(); i++) {
+      if (str[i] >= 'A' && str[i] <= 'Z') {
+        str[i] = str[i] - 'A' + 'a';
+      }
+    }
+  }
+  bool operator==(const Anagram &other) const { // 重載 == 運算子
+    if (str.length() != other.str.length()) {
+      return false;
+    }
+    int count1[26] = {0};
+    int count2[26] = {0};
+    for (int i = 0; i < other.str.length(); i++) {
+      count1[other.str[i] - 'a']++;
+    }
+    for (int i = 0; i < str.length(); i++) {
+      count2[str[i] - 'a']++;
+    }
+    for (int i = 0; i < 26; i++) {
+      if (count1[i] != count2[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+};
+
+int main() {
+  string input1, input2;
+  getline(cin, input1);
+  getline(cin, input2);
+  Anagram a1(input1);
+  Anagram a2(input2);
+  cout << (a1 == a2) << endl; // 比較 a1 與 a2
+  cout << (a2 == a1) << endl; // 比較 a2 與 a1
+  return 0;
+}
