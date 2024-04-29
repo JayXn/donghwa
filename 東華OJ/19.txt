@@ -1,0 +1,133 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Fraction {
+ public:
+  Fraction() : numerator(0), denominator(1) {}
+  Fraction(int n, int m) : numerator(n) {
+    if (m == 0)
+      throw "divided by zero";
+    denominator = m;
+  }
+  int getNumerator() const {
+    return numerator;
+  }
+  int getDenominator() const {
+    return denominator;
+  }
+  void setNumerator(int n) {
+    numerator = n;
+  }
+  void setDenominator(int m) {
+    if (m == 0)
+      throw "divided by zero";
+    denominator = m;
+  }
+  // 計算最大公因數
+  int getGCD(int a, int b) {
+    while (b != 0) {
+      int temp = a % b;
+      a = b;
+      b = temp;
+    }
+    return a;
+  }
+  // 約分函式
+  Fraction simplify(const Fraction& f) {
+    int n = f.getNumerator();
+    int m = f.getDenominator();
+    int gcd = getGCD(n, m);
+    n /= gcd;
+    m /= gcd;
+    return Fraction(n, m);
+  }
+
+  Fraction operator+(const Fraction& f) {
+    int n = numerator * f.getDenominator() + f.getNumerator() * denominator;
+    int m = denominator * f.getDenominator();
+    return simplify(Fraction(n, m));
+  }
+
+  Fraction operator-(const Fraction& f) {
+    int n = numerator * f.getDenominator() - f.getNumerator() * denominator;
+    int m = denominator * f.getDenominator();
+    return simplify(Fraction(n, m));
+  }
+
+  Fraction operator*(const Fraction& f) {
+    int n = numerator * f.getNumerator();
+    int m = denominator * f.getDenominator();
+    return simplify(Fraction(n, m));
+  }
+
+  Fraction operator/(const Fraction& f) {
+    int n = numerator * f.getDenominator();
+    int m = denominator * f.getNumerator();
+    return simplify(Fraction(n, m));
+  }
+
+  Fraction& operator=(const Fraction& f) {
+    numerator = f.getNumerator();
+    denominator = f.getDenominator();
+    return *this;
+  } 
+
+  //算倒數
+  Fraction operator!() {
+    if (numerator == 0)
+      throw "divided by zero";
+    return simplify(Fraction(denominator, numerator));
+  }
+
+  bool operator==(const Fraction& f) { //通分比較
+    return numerator * f.getDenominator() == f.getNumerator() * denominator;
+  }
+
+  friend std::ostream& operator<<(std::ostream& cout, const Fraction& f) {
+    int n = f.getNumerator();
+    int d = f.getDenominator();
+    bool sign = (n < 0) ^ (d < 0);
+    if (d == 0)
+      throw "divided by zero";
+    if (d != 1 && n != 0) {
+      if (sign) {
+        cout << "(-" << abs(n) << "/" << abs(d) << ")";
+      } else {
+        cout << "(" << n << "/" << d << ")";
+      }
+    } else {
+      cout << "(" << n << ")";
+    }
+    return cout;
+  }
+
+  void display() {
+    *this = simplify(*this);
+    bool sign = (numerator < 0) ^ (denominator < 0);
+    if (denominator == 0)
+      throw "divided by zero";
+    if (denominator != 1 && numerator != 0) {
+      if (sign) {
+        cout << "(-" << abs(numerator) << "/" << abs(denominator) << ")";
+      } else {
+        cout << "(" << numerator << "/" << denominator << ")";
+      }
+    } else {
+      cout << "(" << numerator << ")";
+    }
+  }
+
+ private:
+  int numerator, denominator;
+};
+
+// int main(){
+//   Fraction a , b(1, 2), c(1, 3), d(1, 4), e(1, 5), f(1, -600);
+//   a = (((b + c) - d) * e) / f;
+//   cout << b+c << endl;
+//   cout << ((b + c) - d) << endl;
+//   cout << (((b + c) - d) * e) << endl;
+//   cout << ((((b + c) - d) * e) / f) << endl;
+// }
