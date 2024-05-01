@@ -1,0 +1,38 @@
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+class DateTime {
+private:
+    int year, month, day, hours, minutes, seconds;
+
+public:
+    DateTime() : year(1900), month(1), day(1), hours(0), minutes(0), seconds(0) {}
+
+    DateTime(const string& dateTimeStr) {
+      stringstream ss(dateTimeStr);
+      string part;
+      char slash, colon;
+      ss >> year >> slash >> month >> slash >> day >> hours >> colon >> minutes >> colon >> seconds;
+    }
+
+    string toString() const {
+      stringstream ss;
+      ss << setw(4) << setfill('0') << year << '/'
+         << setw(2) << setfill('0') << month << '/'
+         << setw(2) << setfill('0') << day << ' '
+         << setw(2) << setfill('0') << hours << ':'
+         << setw(2) << setfill('0') << minutes << ':'
+         << setw(2) << setfill('0') << seconds;
+      return ss.str();
+    }
+};
+
+int main() {
+    DateTime dt("2024/05/01 12:30:45");
+    cout << dt.toString() << endl;
+    return 0;
+}

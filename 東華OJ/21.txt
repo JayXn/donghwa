@@ -1,0 +1,39 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+using namespace std;
+
+class Time {
+private:
+    string timeStr;
+    int totalSeconds;
+public:
+    Time(): timeStr("00:00:00"), totalSeconds(0) {}
+
+    Time(const string& t): timeStr(t), totalSeconds(0) {
+        CalTime();
+    }
+
+    void CalTime() {
+        int hours = 0, minutes = 0, seconds = 0;
+        char TwoDots;
+        istringstream iss(timeStr);
+        iss >> hours >> TwoDots >> minutes >> TwoDots >> seconds;
+        totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    }
+
+    string toString() const {
+        ostringstream oss;
+        oss << setw(2) << setfill('0') << totalSeconds / 3600 << ":"
+            << setw(2) << setfill('0') << (totalSeconds % 3600) / 60 << ":"
+            << setw(2) << setfill('0') << totalSeconds % 60;
+        return oss.str();
+    }
+
+    int operator-(const Time &t) const {
+        return abs(totalSeconds - t.totalSeconds);
+    }
+};

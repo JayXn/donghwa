@@ -1,0 +1,113 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <map>
+using namespace std;
+
+struct Staff {
+    int id;
+    vector<int> topics;
+};
+
+struct Request {
+    int topicId, numRequests, elapsedTime, serviceTime, timeBetweenRequests;
+};
+
+struct Job {
+    int topicId, startTime, processingStaffId;
+    Job(int tid = 0, int st = 0, int pid = 0): topicId(tid), startTime(st), processingStaffId(pid) {}
+};
+
+struct cmpJob {
+    bool operator() (const Job &a, const Job &b) const {
+        return a.startTime > b.startTime;
+    }
+};
+
+int main() {
+    int scenario = 0;
+    while (true) {
+        int numTopics;
+        cin >> numTopics;
+        if (numTopics == 0) break;
+
+        map<int, priority_queue<Job, vector<Job>, cmpJob>> scheduler;
+        priority_queue<int, vector<int>, greater<int>> timeline;
+
+        for (int i = 0; i < numTopics; i++) {
+            Request req;
+            cin >> req.topicId >> req.numRequests >> req.elapsedTime >> req.serviceTime >> req.timeBetweenRequests;
+            for (int j = 0; j < req.numRequests; j++) {
+                scheduler[req.topicId].push(Job(req.topicId, req.elapsedTime, req.serviceTime));
+                timeline.push(req.elapsedTime);
+                req.elapsedTime += req.timeBetweenRequests;
+            }
+        }
+
+        int numStaff;
+        cin >> numStaff;
+        vector<Staff> staffList(numStaff);
+        for (int i = 0; i < numStaff; i++) {
+            int staffId, numTopicsHandled;
+            cin >> staffId >> numTopicsHandled;
+            staffList[i].id = staffId;
+            for (int j = 0; j < numTopicsHandled; j++) {
+                int topicId;
+                cin >> topicId;
+                staffList[i].topics.push_back(topicId);
+            }
+        }
+
+        sort(staffList.begin(), staffList.end(), [](const Staff &a, const Staff &b) { return a.id < b.id; });
+
+        vector<int> working(numStaff, 0), previousRequestTime(numStaff, 0), finishRequestTime(numStaff, 0);
+        int totalTime = -2, currentTime;
+        timeline.push(-1);
+        while (!timeline.empty()) {
+            currentTime = timeline.top();
+            timeline.pop();
+            if (currentTime == totalTime)
+                continue;
+            totalTime = currentTime;
+
+            for (int i = 0; i < numStaff; i++) {
+                if (working[i] && finishRequestTime[i] <= currentTime)
+                    working[i] = 0;
+            }
+
+            vector<pair<int, int>> availableStaff;
+            for (int i = 0; i < numStaff; i++) {
+                if (!working[i]) {
+                    availableStaff.push_back(make_pair(previousRequestTime[i], i));
+                }
+            }
+            sort(availableStaff.begin(), availableStaff.end(), [](const pair<int, int> &a, const pair<int, int> &b) {
+                if (a.first != b.first) return a.first < b.first;
+                return a.second < b.second;
+            });
+
+            for (int i = 0; i < availableStaff.size(); i++) {
+                Staff &staff = staffList[availableStaff[i].second];
+                for (int j = 0; j < staff.topics.size(); j++) {
+                    int topicId = staff.topics[j];
+                    if (!scheduler[topicId].empty()) {
+                        Job currentJob = scheduler[topicId].top();
+                        if (currentJob.startTime <= currentTime) {
+                            scheduler[topicId].pop();
+                            previousRequestTime[availableStaff[i].second] = currentTime;
+                            finishRequestTime[availableStaff[i].second] = currentTime + currentJob.processingStaffId;
+                            working[availableStaff[i].second] = 1;
+                            timeline.push(finishRequestTime[availableStaff[i].second]);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        cout << "Scenario " << ++scenario << ": All requests are serviced within " << totalTime << " minutes." << endl;
+    }
+
+    return 0;
+}

@@ -1,0 +1,70 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Friend {
+public:
+    int street, avenue;
+    Friend(int s, int a) : street(s), avenue(a) {}
+};
+
+class City {
+public:
+    int maxStreet, maxAvenue, resultStreet, resultAvenue, numFriends;
+    vector<Friend> friends;
+    vector<int> streets, avenues;
+
+    City(int s, int a, int f) : maxStreet(s), maxAvenue(a), numFriends(f) {}
+
+    void addFriend(Friend friendObj) {
+        friends.push_back(friendObj);
+    }
+
+    void addStreetsAvenues() {
+        for (int i = 0; i < numFriends; i++) {
+            streets.push_back(friends[i].street);
+            avenues.push_back(friends[i].avenue);
+        }
+    }
+
+    void findMeetingPoint() {
+        sort(streets.begin(), streets.begin() + numFriends);
+        sort(avenues.begin(), avenues.begin() + numFriends);
+
+        if (numFriends % 2 == 1) {
+            resultStreet = streets[numFriends / 2];
+            resultAvenue = avenues[numFriends / 2];
+        } else {
+            resultStreet = streets[(numFriends - 1) / 2];
+            resultAvenue = avenues[(numFriends - 1) / 2];
+        }
+    }
+};
+
+int main() {
+    int numTests;
+    cin >> numTests;
+    
+    for (int i = 0; i < numTests; i++) {
+        int maxSt, maxAv, numFriends;  
+        cin >> maxSt >> maxAv >> numFriends; 
+        
+        City city(maxSt, maxAv, numFriends);
+        
+        for (int j = 0; j < numFriends; j++) {
+            int s, a;  
+            cin >> s >> a;
+            city.addFriend(Friend(s, a));
+        }
+        
+        city.addStreetsAvenues();
+        city.findMeetingPoint();
+        
+        cout << "(Street: " << city.resultStreet << ", Avenue: " << city.resultAvenue << ")" << endl;
+    }
+
+    return 0;
+}
+

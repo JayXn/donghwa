@@ -1,0 +1,53 @@
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+class Date {
+private:
+    int year;
+    int month;
+    int day;
+
+    static bool isLeapYear(int year) {
+        return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+    }
+
+    static int DaysFromStart(int year, int month, int day) {
+        const int daysPerMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int days = 0;
+        for (int y = 1900; y < year; y++) {
+            days += isLeapYear(y) ? 366 : 365;
+        }
+        for (int m = 1; m < month; m++) {
+            days += daysPerMonth[m - 1];
+            if (m == 2 && isLeapYear(year)) {
+                days++; 
+            }
+        }
+        days += day;
+        return days;
+    }
+
+public:
+    Date() : year(1900), month(1), day(1) {}
+    Date(string dateStr) {
+        stringstream ss(dateStr);
+        char slash;
+        ss >> year >> slash >> month >> slash >> day;
+    }
+
+    string toString() const {
+        stringstream ss;
+        ss << setw(4) << setfill('0') << year << '/' 
+           << setw(2) << setfill('0') << month << '/' 
+           << setw(2) << setfill('0') << day;
+        return ss.str();
+    }
+
+    int operator-(const Date& other) const {
+        return abs(DaysFromStart(year, month, day) - DaysFromStart(other.year, other.month, other.day));
+    }
+};
