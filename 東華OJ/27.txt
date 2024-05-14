@@ -128,10 +128,6 @@ class LinkedList {
         cout << "{}" << endl;
         return o;
       }
-      if(size == 1){
-        cout << "{" << l->head->data << "}" << endl;
-        return o;
-      }
       cout << "{";
       for_each(l -> begin() , l -> end() , 
         [&output_times , &size](int j){

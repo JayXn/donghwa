@@ -5,16 +5,13 @@
 
 using namespace std;
 
-class PokerCard
-{
+class PokerCard{
 public:
-    PokerCard(string s, int f)
-    {
+    PokerCard(string s, int f){
         suit = s;
         face = f;
     }
-    friend ostream &operator<<(ostream &out, const PokerCard &p)
-    {
+    friend ostream &operator<<(ostream &out, const PokerCard &p){
         out<<"["<<p.face<<" of "<<p.suit<<"]";
         return out;
     }

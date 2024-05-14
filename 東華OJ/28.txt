@@ -1,0 +1,72 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+class Point {
+public:
+  Point() : x(0) , y(0){}
+  Point(float a, float b) : x(a) , y(b){}
+
+  void printPoint(){
+    cout << "(" << x << ", " << y <<")";
+  }
+
+  float getX(){
+    return x;
+  }
+  float getY(){
+    return y;
+  }
+  void setX(float a){
+    x = a;
+  }
+  void setY(float a){
+    y = a;
+  }
+  
+  float getDistance(Point p2){
+    return sqrt((x-p2.getX())*(x-p2.getX()) + (y-p2.getY())*(y-p2.getY()));
+  }
+  
+private:
+  float x;
+  float y;
+};
+
+class Segment {
+public:
+  Segment(){
+    p1.setX(0);
+    p1.setY(0);
+    p2.setX(0);
+    p2.setY(0);
+  }
+
+  Segment(Point a, Point b){
+    p1 = a;
+    p2 = b;
+  }
+
+  float getLength(){
+    return sqrt((p1.getX()-p2.getX())*(p1.getX()-p2.getX()) + (p1.getY()-p2.getY())*(p1.getY()-p2.getY()));
+  }
+private:
+  Point p1;
+  Point p2;
+};
+
+int main(){
+  Point p1(1, 2);
+  Point p2(3, 4);
+  p1.printPoint();
+  p2.printPoint();
+  cout << p1.getDistance(p2) << endl;
+
+  Segment s1(p1, p2);
+  cout << s1.getLength() << endl;
+  return 0;
+}
