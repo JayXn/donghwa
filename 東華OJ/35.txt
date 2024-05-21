@@ -1,0 +1,9 @@
+int judge(Container *c) {
+  if (dynamic_cast<const Stack*>(c) != nullptr){
+    return 1;  // Stack
+  } else if (dynamic_cast<const PriorityQueue*>(c) != nullptr){
+    return 2;  // PriorityQueue
+  } else {
+    return 0;
+  }
+}
