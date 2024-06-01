@@ -1,0 +1,303 @@
+#include <algorithm>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+template <class T>
+class LinkedList {
+public:
+ class Node {
+  public:
+   T data;
+   Node* next;
+   Node(): next(nullptr), data(T()) {}
+   Node(T d): next(nullptr), data(d) {}
+   Node(Node* n): next(n), data(T()) {}
+   Node(Node* n, T d): next(n), data(d) {}
+
+   T getData() const {
+     return data;
+   }
+
+   Node* getNext() const {
+     return next;
+   }
+
+   void setNext(Node* n) {
+     next = n;
+   }
+ };
+
+  LinkedList(): head(nullptr) {}
+  ~LinkedList() {
+    while (head) {
+      Node* temp = head;
+      head = head->getNext();
+      delete temp;
+    }
+  }
+
+
+  class iterator {
+   public:
+    Node* it;
+    iterator(Node* p): it(p) {}
+
+    iterator& operator++() {
+      it = it->getNext();
+      return *this;
+    }
+    bool operator==(iterator i) {
+      return it == i.it;
+    }
+    bool operator!=(iterator i) {
+      return it != i.it;
+    }
+    T& operator*() {
+      return it->data;
+    }
+  };
+
+  iterator begin() {
+    return iterator(head);
+  }
+  
+  iterator end() {
+    return iterator(nullptr);
+  }
+
+  bool addFromHead(T d) {
+    Node* newnode = new Node(d);
+    newnode->next = head;
+    head = newnode;
+    return true;
+  }
+  
+  bool addFromTail(T d) {
+    Node* newnode = new Node(d);
+    if (!head) {
+      head = newnode;
+      return true;
+    } else {
+      Node* temp = head;
+      while (temp->getNext()) {
+        temp = temp->getNext();
+      }
+      temp->setNext(newnode);
+      return true;
+    }
+    return false;
+  }
+
+  bool removeFromHead() {
+    if (!head) {
+      return false;
+    }
+    Node* temp = head;
+    head = head->getNext();
+    delete temp;
+    return true;
+  }
+  
+  bool removeFromTail() {
+    if (!head) {
+      return false;
+    }
+    if (head->getNext() == nullptr) {
+      delete head;
+      head = nullptr;
+      return true;
+    }
+    Node* temp = head;
+    while (temp->getNext()->getNext()) {
+      temp = temp->getNext();
+    }
+    delete temp->getNext();
+    temp->next = nullptr;
+    return true;
+  }
+
+  size_t getSize() const {
+    size_t size = 0;
+    Node* temp = head;
+    while (temp) {
+      size++;
+      temp = temp->getNext();
+    }
+    return size;
+  }
+
+  int searchData(T d) const{
+    Node* temp = head;
+    int index = 0;
+    while (temp) {
+      if (temp->data == d) {
+        return index;
+      }
+      index++;
+      temp = temp->next;
+    }
+    return -1;
+  }
+
+  T operator[](int i) {
+    Node* temp = head;
+    int index = 0;
+    while (temp) {
+      if (index == i) {
+        return temp->data;
+      }
+      index++;
+      temp = temp->next;
+    }
+    throw out_of_range("Index out of range");
+  }
+
+  friend ostream& operator<<(ostream& o, LinkedList<T>* l) {
+    size_t size = l->getSize();
+    int output_times = 0;
+    if (size == 0) {
+      cout << "{}" << endl;
+      return o;
+    }
+    cout << "{";
+    for_each(l->begin(), l->end(),
+    [&output_times, &size](T j) {if (output_times == size - 1) {
+      cout << j;
+    } 
+    else {
+      cout << j << ", ";
+      output_times++;
+    }});
+    cout << "}" << endl;
+    return o;
+  }
+protected:
+  Node* head;
+};
+
+
+template <class T>
+class Set : private LinkedList<T> {
+public:
+  Set<T>(): LinkedList<T>() {}
+
+  bool addElement(T d) {
+    if (LinkedList<T>::searchData(d) == -1) {  //可以不要LinkedList::嗎？ //可不可以用this-> //或是什麼都不用
+      LinkedList<T>::addFromTail(d);
+      return true;
+    }
+    return false;
+  }
+
+  friend ostream& operator<<(ostream& o, Set<T>* s) {
+    size_t size = s->getSize();
+    int output_times = 0;
+    if (size == 0) {
+      cout << "{}" << endl;
+      return o;
+    }
+    cout << "{";
+    for_each(s->begin(), s->end(),
+    [&output_times, &size](T j) {if (output_times == size - 1) {
+      cout << j;
+    } 
+    else {
+      cout << j << ", ";
+      output_times++;
+    }});
+    cout << "}" << endl;
+    return o;
+  }
+
+  Set<T>* operator+(Set<T>* s) {
+    Set<T>* result = new Set<T>();
+    typename LinkedList<T>::Node * temp = this->head;
+    while (temp) {
+      result->addElement(temp->data);
+      temp = temp->next;
+    }
+    temp = s->head;
+    while (temp) {
+      result->addElement(temp->data);
+      temp = temp->next;
+    }
+    return result;
+  }
+
+  Set<T>* operator-(Set<T>* s) {
+    Set<T>* result = new Set<T>();
+    typename LinkedList<T>::Node* temp = this->head;
+    while (temp) {
+      if (s->searchData(temp->data) == -1) {
+        result->addElement(temp->data);
+      }
+      temp = temp->next;
+    }
+    return result;
+  }
+
+  Set<T>* operator*(Set<T>* s) {
+    Set<T>* result = new Set<T>();
+    typename LinkedList<T>::Node* temp = this->head;
+    while (temp) {
+      if (s->searchData(temp->data) != -1) {
+        result->addElement(temp->data);
+      }
+      temp = temp->next;
+    }
+    return result;
+  }
+
+  bool operator==( Set<T>* s)  {
+    if (this->getSize() != s->getSize()) {
+      return false;
+    }
+    typename LinkedList<T>::Node* temp = this->head;
+    while (temp) {
+      if (s->searchData(temp->data) == -1) {
+        return false;
+      }
+      temp = temp->next;
+    }
+    return true;
+  }
+
+  bool operator>( Set<T>* s)  {
+    if (this->getSize() <= s->getSize()) {
+        return false;
+    }
+    typename LinkedList<T>::Node* temp = s->head;
+    while (temp) {
+        if (this->searchData(temp->data) == -1) {
+            return false;
+        }
+        temp = temp->next;
+    }
+    return true;
+  }
+
+  bool operator<( Set<T>* s) {
+    return s > this;
+
+  }
+
+  bool operator>=( Set<T>* s)  {
+    if (this->getSize() < s->getSize()) {
+        return false;
+    }
+    typename LinkedList<T>::Node* temp = s->head;
+    while (temp) {
+        if (this->searchData(temp->data) == -1) {
+            return false;
+        }
+        temp = temp->next;
+    }
+    return true;
+  }
+
+  bool operator<=( Set<T>* s)  {
+    return s >= this;
+  }
+};
