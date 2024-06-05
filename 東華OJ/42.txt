@@ -1,0 +1,202 @@
+#include <iostream>
+
+using namespace std;
+
+class Gate {
+ public:
+  Gate* input[2] = {nullptr, nullptr};
+  virtual bool output() = 0;  // 因为 Gate 是抽象的，具体实现由子类完成
+  void setValue(Gate* gate, int pin);  // pin 是引脚，类似接收器的概念
+  void setValue(bool val, int pin);
+};
+
+class TRUE : public Gate {
+ public:
+  virtual bool output() { return true; }
+  void setValue(Gate*, int) {}
+  void setValue(bool, int) {}
+};
+
+class FALSE : public Gate {
+ public:
+  virtual bool output() { return false; }
+  void setValue(Gate*, int) {}
+  void setValue(bool, int) {}
+};
+
+TRUE t;  // 因为 true false 都是无参构造函数，提供默认的无参构造函数
+FALSE f;
+
+void Gate::setValue(bool val, int pin) {
+  if (val) {
+    input[pin] = static_cast<Gate*>(&t);  // 子类指针转换为父类指针
+  } else {
+    input[pin] = static_cast<Gate*>(&f);
+  }
+}
+
+void Gate::setValue(Gate* gate, int pin) {
+  input[pin] = gate;
+}
+
+class NOT : public Gate {  // NOT 输入 1 输出 0，只会有一个 pin 引脚
+ public:
+  virtual bool output() { return !input[0]->output(); }
+};
+
+class NAND : public Gate {  // NAND = AND + NOT
+ public:
+  virtual bool output() { return !(input[0]->output() && input[1]->output()); }
+};
+
+class NOR : public Gate {  // NOR = OR + NOT
+ public:
+  virtual bool output() { return !(input[0]->output() || input[1]->output()); }
+};
+
+class AND : public Gate {  // AND = NAND + NOT
+ private:
+  NAND nandGate;
+  NOT notGate;
+
+ public:
+  virtual bool output() {
+    nandGate.setValue(input[0], 0);
+    nandGate.setValue(input[1], 1);
+    notGate.setValue(&nandGate, 0);
+    return notGate.output();
+  }
+};
+
+class OR : public Gate {  // OR = NOR + NOT
+ private:
+  NOR norGate;
+  NOT notGate;
+
+ public:
+  virtual bool output() {
+    norGate.setValue(input[0], 0);
+    norGate.setValue(input[1], 1);
+    notGate.setValue(&norGate, 0);
+    return notGate.output();
+  }
+};
+
+class XOR : public Gate {  // XOR 使用基本门实现
+ private:
+  AND and1, and2;
+  OR orGate;
+  NOT not1, not2;
+
+ public:
+  virtual bool output() {
+    not1.setValue(input[0], 0);
+    not2.setValue(input[1], 0);
+
+    and1.setValue(input[0], 0);
+    and1.setValue(&not2, 1);
+
+    and2.setValue(&not1, 0);
+    and2.setValue(input[1], 1);
+
+    orGate.setValue(&and1, 0);
+    orGate.setValue(&and2, 1);
+
+    return orGate.output();
+  }
+};
+
+class OneBitHalfAdder {
+ public:
+  OneBitHalfAdder() {
+    component[0] = new AND();
+    component[1] = new XOR();
+  }
+
+  void setValue(bool val, int pin) {
+    component[0]->setValue(val, pin);
+    component[1]->setValue(val, pin);
+  }
+
+  void setValue(Gate* gate, int pin) {
+    component[0]->setValue(gate, pin);
+    component[1]->setValue(gate, pin);
+  }
+
+  Gate* sum() {  // 返回 XOR 门的输出作为和
+    return component[1];
+  }
+
+  Gate* carryOut() {  // 返回 AND 门的输出作为进位
+    return component[0];
+  }
+
+ private:
+  Gate* component[2];
+};
+
+class OneBitFullAdder {
+ public:
+  OneBitFullAdder() {
+    a[0] = new OneBitHalfAdder();
+    a[1] = new OneBitHalfAdder();
+    carry = new OR();
+  }
+
+  void setValue(bool val, int pin) {
+    if (pin == 2) {
+      a[1]->setValue(val, 1);
+    } else {
+      a[0]->setValue(val, pin);
+      a[1]->setValue(val, pin);
+    }
+  }
+
+  void setValue(Gate* gate, int pin) {
+    if (pin == 2) {
+      a[1]->setValue(gate, 1);
+    } else {
+      a[0]->setValue(gate, pin);
+      a[1]->setValue(gate, pin);
+    }
+  }
+
+  Gate* sum() {
+    a[1]->setValue(a[0]->sum(), 0);
+    return a[1]->sum();
+  }
+
+  Gate* carryOut() {
+    a[1]->setValue(a[0]->sum(), 0);
+    carry->setValue(a[0]->carryOut(), 0);
+    carry->setValue(a[1]->carryOut(), 1);
+    return carry;
+  }
+
+ private:
+  OneBitHalfAdder* a[2];
+  Gate* carry;
+};
+
+// 示例用法
+int main() {
+  OneBitHalfAdder halfAdder;
+  OneBitFullAdder fullAdder;
+
+  // 设置输入值
+  halfAdder.setValue(true, 0);   // A
+  halfAdder.setValue(false, 1);  // B
+
+  fullAdder.setValue(true, 0);   // A
+  fullAdder.setValue(true, 1);   // B
+  fullAdder.setValue(false, 2);  // Cin
+
+  // 获取输出值
+  cout << "Half Adder Sum: " << halfAdder.sum()->output() << endl;
+  cout << "Half Adder Carry: " << halfAdder.carryOut()->output() << endl;
+
+  cout << "Full Adder Sum: " << fullAdder.sum()->output() << endl;
+  cout << "Full Adder Carry: " << fullAdder.carryOut()->output() << endl;
+
+  return 0;
+}

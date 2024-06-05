@@ -1,0 +1,31 @@
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int collatz_length(int n) {
+    int length = 1;
+    while (n != 1) {
+        if (n % 2 == 1) {
+            n = 3 * n + 1;
+        } else {
+            n /= 2;
+        }
+        length++;
+    }
+    return length;
+}
+
+int main() {
+    int n, m;
+    while (cin >> n >> m) {
+        int a = min(n, m);
+        int b = max(n, m);
+        int max_length = 0;
+        for (int i = a; i <= b; ++i) {
+            max_length = max(max_length, collatz_length(i));
+        }
+        cout << n << " " << m << " " << max_length << endl;
+    }
+    return 0;
+}

@@ -1,0 +1,141 @@
+#include <iostream>
+
+using namespace std;
+
+// 基底類別 Gate
+class Gate {
+public:
+    Gate* input[2] = {nullptr, nullptr};
+    virtual bool output() = 0; // 純虛擬函數，具體實現由子類別完成
+    virtual void setValue(Gate* gate, int pin);
+    virtual void setValue(bool val, int pin);
+    virtual ~Gate() = default; // 加入虛擬解構函數
+};
+
+// 定義 TRUE 和 FALSE 類別
+class TRUE : public Gate {
+public:
+    bool output() override { return true; }
+    void setValue(Gate*, int) override {}
+    void setValue(bool, int) override {}
+};
+
+class FALSE : public Gate {
+public:
+    bool output() override { return false; }
+    void setValue(Gate*, int) override {}
+    void setValue(bool, int) override {}
+};
+
+TRUE t;
+FALSE f;
+
+// Gate 類別的成員函數實現
+void Gate::setValue(bool val, int pin) {
+    input[pin] = val ? static_cast<Gate*>(&t) : static_cast<Gate*>(&f);
+}
+
+void Gate::setValue(Gate* gate, int pin) {
+    input[pin] = gate;
+}
+
+// 定義 NOT 類別
+class NOT : public Gate {
+public:
+    bool output() override {
+        return !input[0]->output();
+    }
+};
+
+// 定義 NAND 類別
+class NAND : public Gate {
+public:
+    bool output() override {
+        return !(input[0]->output() && input[1]->output());
+    }
+};
+
+// 定義 NOR 類別
+class NOR : public Gate {
+public:
+    bool output() override {
+        return !(input[0]->output() || input[1]->output());
+    }
+};
+
+// 定義 AND 類別
+class AND : public Gate {
+private:
+    NAND nandGate;
+    NOT notGate;
+public:
+    bool output() override {
+        nandGate.setValue(input[0], 0);
+        nandGate.setValue(input[1], 1);
+        notGate.setValue(&nandGate, 0);
+        return notGate.output();
+    }
+};
+
+// 定義 OR 類別
+class OR : public Gate {
+private:
+    NOR norGate;
+    NOT notGate;
+public:
+    bool output() override {
+        norGate.setValue(input[0], 0);
+        norGate.setValue(input[1], 1);
+        notGate.setValue(&norGate, 0);
+        return notGate.output();
+    }
+};
+
+// 定義 XOR 類別
+class XOR : public Gate {
+private:
+    AND and1, and2;
+    OR orGate;
+    NOT not1, not2;
+public:
+    bool output() override {
+        not1.setValue(input[0], 0);
+        not2.setValue(input[1], 0);
+        
+        and1.setValue(input[0], 0);
+        and1.setValue(&not2, 1);
+        
+        and2.setValue(&not1, 0);
+        and2.setValue(input[1], 1);
+        
+        orGate.setValue(&and1, 0);
+        orGate.setValue(&and2, 1);
+        
+        return orGate.output();
+    }
+};
+
+// 主函數測試邏輯閘
+int main() {
+    TRUE t;
+    FALSE f;
+
+    AND andGate;
+    OR orGate;
+    XOR xorGate;
+
+    andGate.setValue(&t, 0);
+    andGate.setValue(&f, 1);
+
+    orGate.setValue(&t, 0);
+    orGate.setValue(&f, 1);
+
+    xorGate.setValue(&t, 0);
+    xorGate.setValue(&f, 1);
+
+    cout << "AND Gate: " << andGate.output() << endl; // 應該輸出 0 (false)
+    cout << "OR Gate: " << orGate.output() << endl; // 應該輸出 1 (true)
+    cout << "XOR Gate: " << xorGate.output() << endl; // 應該輸出 1 (true)
+
+    return 0;
+}

@@ -1,0 +1,45 @@
+#include <iostream>
+#include <algorithm>
+#include <cmath>
+#include <string>
+
+using namespace std;
+
+// 判斷一個數是否為質數
+bool is_prime(int n) {
+    if (n <= 1) return false;
+    if (n == 2) return true; // 2 是唯一的偶數質數
+    if (n % 2 == 0) return false; // 其他偶數不可能是質數
+    for (int i = 3; i <= sqrt(n); i += 2) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+// 反轉一個數字
+int reverse_number(int n) {
+    string s = to_string(n);
+    reverse(s.begin(), s.end());
+    return stoi(s);
+}
+
+// 判斷一個數是否為反質數
+bool is_emirp(int n) {
+    if (!is_prime(n)) return false;
+    int reversed = reverse_number(n);
+    return n != reversed && is_prime(reversed);
+}
+
+int main() {
+    int n;
+    while (cin >> n) {
+        if (!is_prime(n)) {
+            cout << n << " is not prime." << endl;
+        } else if (is_emirp(n)) {
+            cout << n << " is emirp." << endl;
+        } else {
+            cout << n << " is prime." << endl;
+        }
+    }
+    return 0;
+}
