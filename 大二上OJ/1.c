@@ -6,7 +6,7 @@ void allocArray(int*** p, int m, int n) {
   (*p)[0] = malloc(sizeof(int) * n);
 
   for(int i = 1 ; i < m ; i++){
-    (*p)[i] = (*p)[0] + i * n; //?? 為什麼這邊不是直接數幾個byte
+    (*p)[i] = (*p)[0] + i * n; 
   }
 }
 
