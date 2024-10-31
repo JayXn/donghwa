@@ -90,12 +90,12 @@ class Maze {
         if (i == s - 1 && j == s - 1)
           g->setState(0);
 
-        if (prev) {
+        if (prev) { //不是列頭的話
           prev->setDir(RIGHT, g);
           g->setDir(LEFT, prev);
         }
 
-        if (i > 0 && prevRow[j]) {
+        if (i > 0 && prevRow[j]) { //跟上行連結
           prevRow[j]->setDir(DOWN, g);
           g->setDir(UP, prevRow[j]);
         }

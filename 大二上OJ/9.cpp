@@ -4,11 +4,9 @@
 
 using namespace std;
 
-
-//對於節點i 左節點為2i+1 右節點為2i+2
-//對於節點i 父節點為(i-1)/2 
-//假設層數為k 有2^k-1個節點
-
+// 對於節點i 左節點為2i+1 右節點為2i+2
+// 對於節點i 父節點為(i-1)/2
+// 假設層數為k 有2^k-1個節點
 
 template <class T>
 class BinaryTreeInArray {
