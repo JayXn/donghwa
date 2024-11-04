@@ -79,7 +79,7 @@ class BinarySearchTree {
   int height() { return height(root); }
   int height(Node* node) {
     if (!node)
-      return 0;
+      return -1;
 
     int leftHeight = height(node->left);
     int rightHeight = height(node->right);
