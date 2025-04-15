@@ -9,20 +9,20 @@ The psudo code may like followed:
 #include <vector>
 
 ReturnType solve(DataSet input) {
-    // if the input is trivial, return the answer
+    // 如果輸入是簡單情況，返回答案
     if (in_trivial_case_1()) {
         return ReturnType::V1;
     } 
     if (in_trivial_case_2()) {
         return ReturnType::V2;
     }
-    // if not, break down the problem to sub-problems
+    // 如果不是，將問題拆分為子問題
     std::vector<DataSet> subProblems = divide(input);
-    // solve sub-problems recursively
+    // 遞歸解決子問題
     std::vector<ReturnType> subProblemReturns;
     for (size_t i = 0; i < subProblems.size(); ++i) 
         subProblemReturns.push_back(solve(subProblems[i]));
-    // aggregate the information from sub-problems to find the true answer
+    // 聚合子問題的結果以找到真實答案
     ReturnType answer = merge(subProblemReturns);
     return answer;
 }
@@ -53,23 +53,23 @@ Now, suppose we choose $k = 2$. We can implement the algorithm as followed:
 
 ```C++
 DataType solve(DataSet input) {
-    // if the input is trivial, return the answer
-    if (input.count == 1) // if we have only 1 element, then it's the biggest one
+    // 如果輸入是簡單情況，返回答案
+    if (input.count == 1) // 如果只有 1 個元素，那它就是最大的
         return given[input.begin];
-    // if not, break down the problem to sub-problems
-    // divide problem to 2 sub-problems with the same size
+    // 如果不是，將問題拆分為子問題
+    // 將問題拆分為 2 個大小相同的子問題
     std::vector<DataSet> subProblems(2); 
-    // 1st part
+    // 第一部分
     subProblems[0].begin = input.begin;
     subProblems[0].count = input.count / 2;
-    // 2nd part
+    // 第二部分
     subProblems[1].begin = input.begin + subProblems[0].count;
-    subProblem[1].count = input.count - subProblem[0].count;
-    // solve sub-problems recursively
+    subProblems[1].count = input.count - subProblems[0].count;
+    // 遞歸解決子問題
     std::vector<DataType> subProblemReturns;
     for (size_t i = 0; i < subProblems.size(); ++i) 
         subProblemReturns.push_back(solve(subProblems[i]));
-    // aggregate the information from sub-problems to find the true answer
+    // 聚合子問題的結果以找到真實答案
     DataType answer;
     if (subProblemReturns[0] > subProblemReturns[1])
         answer = subProblemReturns[0];
@@ -77,6 +77,7 @@ DataType solve(DataSet input) {
         answer = subProblemReturns[1];
     return answer;
 }
+
 ```
 
 ### Question: Rewrite the above algorithm to find 3rd-largest element. 
@@ -138,3 +139,21 @@ Map-reduce is a typical divide and conquer computation model hiwch was designed 
 >> Input: [3, 2, 3, 5, 2, 3, 4, 5, 6, 22]
 
 >> Output: [{2, 2}, {3, 3}, {4, 1}, {5, 2}, {6, 1}, {22,1}]
+
+
+
+
+
+設 f(n) = Θ(n^c_crit * log^k n) 則
+f(n) / n^c = (n^c_crit * log^k n) / n^c = n^(c_crit - c) * log^k n
+因為 c > c_crit，所以 c_crit - c < 0，也就是：
+n^(c_crit - c) = 1 / n^(c - c_crit)，當 n 趨近無限大時趨近於 0
+log^k n 雖然會成長，但比任何正次方 n^ε 慢很多（對任何 ε > 0 都成立）所以整體：
+n^(c_crit - c) * log^k n → 0，當 n → ∞
+也就是：
+f(n) / n^c → 0
+因此：
+f(n) = o(n^c)，所以 f(n) 不可能是 Ω(n^c)
+
+
+

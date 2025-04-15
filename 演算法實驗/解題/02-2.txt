@@ -1,0 +1,8 @@
+Question: When satisfied otherwise, try to proof there are no $c > c_{crit}$ can let $f(n) = \Omega(n^c)$
+
+假設有 c>c_crit 使得 f(n)=Ω(n^c)：即假設存在某個 c>c_crit ，使得對於某個常數k，有 f(n)≥k⋅n^c 對於足夠大的 n 成立。       
+
+如果 c>c_crit ​，那麼假設 f(n) 以更快的速率增長，即f(n) 應該能大於或等於 n^c 的某個常數倍。然而，基於 c_crit ​ 的定義
+，f(n) 的增長速率實際上不可能超過某個臨界值。如果 f(n) 增長得比 n^c 快，那麼它將違背 c_crit ​ 的設定。
+
+因此，假設c>c_crit​是不成立的。換句話說，沒有c>c_crit​使得 f(n)=Ω(nc)，因為這會與函數的增長速率和臨界點的定義產生矛盾。
